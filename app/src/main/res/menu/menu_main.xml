@@ -5,7 +5,8 @@
     <item android:id="@+id/RemindMeIn" android:title="תזמן התראה מוקדמת"/>
     <item android:id="@+id/NotificationSound" android:title="שנה צליל התראה" />
     <item android:id="@+id/ShowWhenAlert" android:title="הצג שעת התראה"/>
-    <item android:id="@+id/action_about" android:title="@string/action_about"  android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/ExtraTime" android:checkable="true" android:title="אפשר שעות נוספות" />
     <item android:id="@+id/DeleteAllDB" android:title="נקה נתונים"/>
     <item android:id="@+id/DBreCreate" android:title="מחק מסד נתונים"/>
+    <item android:id="@+id/action_about" android:title="@string/action_about"  android:orderInCategory="100" app:showAsAction="never" />
 </menu>

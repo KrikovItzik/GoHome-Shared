@@ -33,6 +33,10 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String CONFIGURATION_COLUMN_ID = "_id";
     public static final String CONFIGURATION_COLUMN_RINGTONE = "SelectedRingtone";
 
+    //Table ExtraTime
+    public static final String TABLE_EXTRATIME = "tbl_ExtraTime";
+    public static final String EXTRATIME_COLUMN_ID = "_id";
+    public static final String EXTRATIME_COLUMN_EXTRATIME = "AllowExtraTime";
 
     //We need to pass database information along to superclass
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -64,6 +68,12 @@ public class DBHandler extends SQLiteOpenHelper {
                 CONFIGURATION_COLUMN_RINGTONE + " TEXT " +
                 ");";
         db.execSQL(queryConfiguration);
+
+        String queryExtraTime = "CREATE TABLE " + TABLE_EXTRATIME + "(" +
+                EXTRATIME_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                EXTRATIME_COLUMN_EXTRATIME + " TEXT " +
+                ");";
+        db.execSQL(queryExtraTime);
     }
 
 
@@ -106,6 +116,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS tbl_Notification");
         db.execSQL("DROP TABLE IF EXISTS tbl_Configuration");
         db.execSQL("DROP TABLE IF EXISTS tbl_PRE_ALARM");
+        db.execSQL("DROP TABLE IF EXISTS tbl_ExtraTime");
         onCreate(db);
     }
 
