@@ -22,6 +22,16 @@
         android:longClickable="false"
         android:timePickerMode="clock" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_Note"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:layout_below="@+id/timePicker"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/material_blue_grey_800"
+        android:text="שעת יציאה"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
