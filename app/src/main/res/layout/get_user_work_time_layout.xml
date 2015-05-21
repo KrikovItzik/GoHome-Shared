@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/get_user_time_layout"
+    android:gravity="center"
+    android:baselineAligned="false">
+
+    <TimePicker
+        android:id="@+id/TP_Teken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:longClickable="false"
+        android:layout_alignParentTop="true"
+        android:timePickerMode="spinner"
+        android:layout_alignStart="@+id/TP_Teken">
+    </TimePicker>
+
+</RelativeLayout>
