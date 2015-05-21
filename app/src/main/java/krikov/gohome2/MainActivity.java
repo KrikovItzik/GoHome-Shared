@@ -112,7 +112,7 @@ public class MainActivity extends ActionBarActivity {
             Hrs = Hrs + 1;
             Min = Min - 60;
         }
-        if (Hrs > 24) {
+        if (Hrs >= 24) {
             Hrs = Hrs - 24;
         }
         if (Min == 0) {
@@ -169,22 +169,18 @@ public class MainActivity extends ActionBarActivity {
         PreAlarm_PendIntent = PendingIntent.getService(this, 0,PreAlarm_Intent, 0);
 
         int currentDayOfMonth; // Define int for Current Day of the Month
-        Calendar c = Calendar.getInstance(); // Define Calendar Object
-//        int Year = c.get(Calendar.YEAR);
-//        int Day = c.get(Calendar.DAY_OF_MONTH);
-//        int Month = c.get(Calendar.AM_PM);
-//        int Hours = pickerTime.getCurrentHour();
-//        int Minutes = pickerTime.getCurrentMinute();
+        Calendar calendar = Calendar.getInstance(); // Define Calendar Object
 
-
-        if (CalcHours >= 24 || CalcHours >=23 && CalcMinutes >= 60) {
-            currentDayOfMonth = c.get(Calendar.DAY_OF_MONTH) + 1;
+        if (CalcHours >= 24 || CalcHours >=23 && CalcMinutes >= 60)
+        {
+            currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH) + 1;
         }
-        else {
-            currentDayOfMonth = c.get(Calendar.DAY_OF_MONTH);
+        else
+        {
+            currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         }
-        int currentMonth = c.get(Calendar.MONTH);
-        int currentYear = c.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
         int amorpm;
         if (Hrs > 12 ) {
             amorpm = 1;
@@ -194,57 +190,61 @@ public class MainActivity extends ActionBarActivity {
         }
         int currentHour = Hrs;
         int currentMinutes = Min;
-        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND, 5);
         calendar.set(Calendar.MINUTE, currentMinutes);
         calendar.set(Calendar.HOUR, currentHour);
         calendar.set(Calendar.AM_PM, amorpm);
         calendar.set(Calendar.DAY_OF_MONTH, currentDayOfMonth);
         calendar.set(Calendar.MONTH, currentMonth);
-        calendar.set(Calendar.YEAR,currentYear );
+        calendar.set(Calendar.YEAR, currentYear);
         String PreAlarmFromDB = dbHandler.getDataFromDB("tbl_PRE_ALARM","pre_alarm","");
+        if (PreAlarmFromDB.equals(""))
+        {
+            PreAlarmFromDB = "15";
+            dbHandler.addData("tbl_PRE_ALARM","pre_alarm","15");
+        }
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         Integer PrePre = currentMinutes - Integer.valueOf(PreAlarmFromDB);
         calendar.set(Calendar.MINUTE, PrePre);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), PreAlarm_PendIntent);
         calendar.clear();
-        c.clear();
         Toast.makeText(MainActivity.this, "התראה תופיע בשעה שנקבעה", Toast.LENGTH_SHORT).show();
         //moveTaskToBack(true);
     }
 
     private void GetUserWorkTimer() {
-//        final EditText textInput = new EditText(this);
         final AlertDialog.Builder popDialog1 = new AlertDialog.Builder(this);
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
         final View Viewlayout = inflater.inflate(R.layout.get_user_work_time_layout,
                 (ViewGroup) findViewById(R.id.get_user_time_layout));
 
-//        final TimePicker guTimerPicker = new TimePicker(this);
         DBQuery("tbl_Teken", "teken", "");
-//        textInput.setText(dbString);
         AlertDialog.Builder alertDialog;
         alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("בחר שעות תקן");
         //alertDialog.setIcon(R.drawable.);
 //      alertDialog.setView(textInput);
-
         TP = (TimePicker) Viewlayout.findViewById(R.id.TP_Teken);
         TP.setIs24HourView(true);
-        TP.setCurrentHour(9);
-        TP.setCurrentMinute(0);
+        if (dbString.equals("")) {
+            TP.setCurrentHour(9);
+            TP.setCurrentMinute(0);
+        }
+        else
+        {
+            WorkTimeParameter =  dbString.split(":");
+            TP.setCurrentHour(Integer.valueOf(WorkTimeParameter[0]));
+            TP.setCurrentMinute(Integer.valueOf(WorkTimeParameter[1]));
+        }
         alertDialog.setView(Viewlayout);
         alertDialog.setPositiveButton("אישור",new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-//                String userSet = textInput.getText().toString();
-//                String tbl_Name = "tbl_Teken";
-//                String tbl_Column = "teken";
-//                String tbl_Data = userSet;
-//                dbHandler.addData(tbl_Name,tbl_Column,tbl_Data);
+                String userSet = TP.getCurrentHour() + ":" + TP.getCurrentMinute();
+                dbHandler.addData("tbl_Teken","teken",userSet);
                 Toast.makeText(getBaseContext(),"שעות תקן נשמרו",Toast.LENGTH_SHORT).show();
             }
         });
