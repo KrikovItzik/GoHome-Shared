@@ -9,9 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.DigitalClock;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -24,17 +25,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.security.PublicKey;
 import java.util.Calendar;
-import java.util.Set;
 
 public class MainActivity extends ActionBarActivity {
     private RadioGroup RG;
-    private RadioButton RB;
+    private TimePicker TP;
     public TimePicker pickerTime;
     public Button OnButton;
     String WorkTimeParameter[];
     String dbString;
     static final int UniqueID = 10101978;
+    public String time;
     int Hrs;
     int Min;
     public int CalcHours;
@@ -54,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
         pickerTime.getCurrentHour();
         pickerTime.getCurrentMinute();
         dbHandler = new DBHandler(this, null, null,  1);
+        UpdateTvNote();
         DBQuery("tbl_Teken", "teken", "");
         if (dbString.equals("") )
         {
@@ -111,9 +115,38 @@ public class MainActivity extends ActionBarActivity {
         if (Hrs > 24) {
             Hrs = Hrs - 24;
         }
-        dbHandler.addData("tbl_Notification", "notification", Hrs + ":" + Min);
-        Toast.makeText(getBaseContext(), "ללכת הביתה ב :" + Hrs + ":" + Min, Toast.LENGTH_LONG).show();
+        if (Min == 0) {
+            time = Hrs + ":00";
+        }
+        else
+        {
+            if (Min < 10){
+                time = Hrs+":0"+Min;
+            }
+            else
+            {
+                time = Hrs + ":" + Min;
+            }
+        }
+        dbHandler.addData("tbl_Notification", "notification", time);
+        UpdateTvNote();
+//        Toast.makeText(getBaseContext(), "ללכת הביתה ב "+ time, Toast.LENGTH_LONG).show();
         alarmMethod();
+    }
+
+    public void UpdateTvNote(){
+        DBQuery("tbl_Notification", "notification", "");
+        if (dbString.equals(""))
+        {
+            TextView text_tv_Note = (TextView) findViewById(R.id.tv_Note);
+            text_tv_Note.setText("לא נמצאו התראות");
+        }
+        else
+        {
+            time = dbString;
+            TextView text_tv_Note = (TextView) findViewById(R.id.tv_Note);
+            text_tv_Note.setText("שעת סיום התקן " +time);
+        }
     }
 
     public void showtime() {
@@ -181,24 +214,37 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void GetUserWorkTimer() {
-        final EditText textInput = new EditText(this);
-        DBQuery("tbl_Teken","teken","");
-        textInput.setText(dbString);
+//        final EditText textInput = new EditText(this);
+        final AlertDialog.Builder popDialog1 = new AlertDialog.Builder(this);
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        final View Viewlayout = inflater.inflate(R.layout.get_user_work_time_layout,
+                (ViewGroup) findViewById(R.id.get_user_time_layout));
+
+//        final TimePicker guTimerPicker = new TimePicker(this);
+        DBQuery("tbl_Teken", "teken", "");
+//        textInput.setText(dbString);
         AlertDialog.Builder alertDialog;
         alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("אנא הכנס שעות תקן");
-        alertDialog.setIcon(R.mipmap.ic_launcher);
-        alertDialog.setView(textInput);
+        alertDialog.setTitle("בחר שעות תקן");
+        //alertDialog.setIcon(R.drawable.);
+//      alertDialog.setView(textInput);
+
+        TP = (TimePicker) Viewlayout.findViewById(R.id.TP_Teken);
+        TP.setIs24HourView(true);
+        TP.setCurrentHour(9);
+        TP.setCurrentMinute(0);
+        alertDialog.setView(Viewlayout);
         alertDialog.setPositiveButton("אישור",new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                String userSet = textInput.getText().toString();
-                String tbl_Name = "tbl_Teken";
-                String tbl_Column = "teken";
-                String tbl_Data = userSet;
-                dbHandler.addData(tbl_Name,tbl_Column,tbl_Data);
+//                String userSet = textInput.getText().toString();
+//                String tbl_Name = "tbl_Teken";
+//                String tbl_Column = "teken";
+//                String tbl_Data = userSet;
+//                dbHandler.addData(tbl_Name,tbl_Column,tbl_Data);
                 Toast.makeText(getBaseContext(),"שעות תקן נשמרו",Toast.LENGTH_SHORT).show();
             }
         });
@@ -382,8 +428,9 @@ public class MainActivity extends ActionBarActivity {
                 NotificationSoundSelect();
                 return true;
             case R.id.DeleteAllDB:
-                dbHandler.deleteTable("tbl_Teken");
-                dbHandler.deleteTable("tbl_Notification");
+                dbHandler.dropAllTable();
+                TextView text_tv_Note = (TextView) findViewById(R.id.tv_Note);
+                text_tv_Note.setText("לא נמצאו התראות");
                 Toast.makeText(getBaseContext(), "כל המידע נמחק במסד הנתונים", Toast.LENGTH_SHORT).show();
                 GetUserWorkTimer();
                 return true;
@@ -397,6 +444,8 @@ public class MainActivity extends ActionBarActivity {
                 }
                 return true;
             case R.id.DBreCreate:
+                text_tv_Note = (TextView) findViewById(R.id.tv_Note);
+                text_tv_Note.setText("לא נמצאו התראות");
                 dbHandler.dropAllTable();
                 return true;
             case R.id.RemindMeIn:
