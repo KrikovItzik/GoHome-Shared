@@ -9,27 +9,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.DigitalClock;
-import android.widget.NumberPicker;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.security.PublicKey;
 import java.util.Calendar;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private RadioGroup RG;
     private TimePicker TP;
     public TimePicker pickerTime;
@@ -139,13 +134,13 @@ public class MainActivity extends ActionBarActivity {
         if (dbString.equals(""))
         {
             TextView text_tv_Note = (TextView) findViewById(R.id.tv_Note);
-            text_tv_Note.setText("לא נמצאו התראות");
+            text_tv_Note.setText(R.string.alert_not_found);
         }
         else
         {
             time = dbString;
             TextView text_tv_Note = (TextView) findViewById(R.id.tv_Note);
-            text_tv_Note.setText("שעת סיום התקן " +time);
+            text_tv_Note.setText(getString(R.string.time_finished_teken) + " " + time);
         }
     }
 
@@ -160,6 +155,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
     }
+
 
     public void alarmMethod() {
         Intent SetAlarm = new Intent(this, NotifyService.class);
@@ -208,12 +204,12 @@ public class MainActivity extends ActionBarActivity {
         calendar.set(Calendar.MINUTE, PrePre);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), PreAlarm_PendIntent);
         calendar.clear();
-        Toast.makeText(MainActivity.this, "התראה תופיע בשעה שנקבעה", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, getString(R.string.alarm_will_show_in), Toast.LENGTH_SHORT).show();
         //moveTaskToBack(true);
     }
 
     private void GetUserWorkTimer() {
-        final AlertDialog.Builder popDialog1 = new AlertDialog.Builder(this);
+//        final AlertDialog.Builder popDialog1 = new AlertDialog.Builder(this);
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
         final View Viewlayout = inflater.inflate(R.layout.get_user_work_time_layout,
@@ -222,9 +218,8 @@ public class MainActivity extends ActionBarActivity {
         DBQuery("tbl_Teken", "teken", "");
         AlertDialog.Builder alertDialog;
         alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("בחר שעות תקן");
+        alertDialog.setTitle(getString(R.string.set_time_teken));
         //alertDialog.setIcon(R.drawable.);
-//      alertDialog.setView(textInput);
         TP = (TimePicker) Viewlayout.findViewById(R.id.TP_Teken);
         TP.setIs24HourView(true);
         if (dbString.equals("")) {
@@ -245,7 +240,7 @@ public class MainActivity extends ActionBarActivity {
             {
                 String userSet = TP.getCurrentHour() + ":" + TP.getCurrentMinute();
                 dbHandler.addData("tbl_Teken","teken",userSet);
-                Toast.makeText(getBaseContext(),"שעות תקן נשמרו",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),getString(R.string.data_saved),Toast.LENGTH_SHORT).show();
             }
         });
         alertDialog.setNegativeButton("ביטול",new DialogInterface.OnClickListener()
@@ -253,7 +248,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                Toast.makeText(getBaseContext(), "לא נשמר", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.data_not_saved), Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -270,10 +265,10 @@ public class MainActivity extends ActionBarActivity {
     private void showAbout(){
         final AlertDialog.Builder alertDialog;
         alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("אודות");
-        alertDialog.setMessage("פותח על ידי איציק קריקוב 4/2015");
+        alertDialog.setTitle(getString(R.string.about));
+        alertDialog.setMessage("פותח על ידי איציק קריקוב 4/2015" );
         alertDialog.setIcon(R.drawable.photo);
-        alertDialog.setNeutralButton("סגור", new DialogInterface.OnClickListener() {
+        alertDialog.setNeutralButton(getString(R.string.Close), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -290,11 +285,11 @@ public class MainActivity extends ActionBarActivity {
                 (ViewGroup) findViewById(R.id.layout_extraTime));
 
         popDialog.setIcon(android.R.drawable.ic_menu_help);
-        popDialog.setTitle("תכנון שעות נוספות להיום");
+        popDialog.setTitle(getString(R.string.Prepare_extra_hours));
         popDialog.setView(Viewlayout);
         RG = (RadioGroup) Viewlayout.findViewById(R.id.radioGroup);
         // Button OK
-        popDialog.setPositiveButton("אישור",new DialogInterface.OnClickListener() {
+        popDialog.setPositiveButton(getString(R.string.Confirm),new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 int radioButtonID = RG.getCheckedRadioButtonId();
                 View radioButton = RG.findViewById(radioButtonID);
@@ -320,7 +315,7 @@ public class MainActivity extends ActionBarActivity {
         final TextView item1 = (TextView)Viewlayout.findViewById(R.id.txtItem1); // txtItem1
 
         popDialog.setIcon(android.R.drawable.ic_lock_idle_alarm);
-        popDialog.setTitle("בחר התראה מוקדמת בין 0-30 דקות");
+        popDialog.setTitle(getString(R.string.Select_Pre_Alarm));
         popDialog.setView(Viewlayout);
 
         //  seekBar1
@@ -334,11 +329,11 @@ public class MainActivity extends ActionBarActivity {
         else {
             seek1.setProgress(Integer.valueOf(dbString));
         }
-        item1.setText("דקות : "+seek1.getProgress());
+        item1.setText(getString(R.string.Minutes)+": "+seek1.getProgress());
         seek1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
                 //Do something here with new value
-                item1.setText("דקות : " + progress);
+                item1.setText(getString(R.string.Minutes)+": "+ progress);
             }
 
             public void onStartTrackingTouch(SeekBar arg0) {
@@ -354,13 +349,13 @@ public class MainActivity extends ActionBarActivity {
 
 
         // Button OK
-        popDialog.setPositiveButton("אישור",
+        popDialog.setPositiveButton(getString(R.string.Confirm),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Integer UserProgress = seek1.getProgress();
                         dbHandler.addData("tbl_PRE_ALARM","pre_alarm",String.valueOf(UserProgress));
                         dialog.dismiss();
-                        Toast.makeText(getBaseContext(),"התראה ראשונה "+seek1.getProgress()+" דקות לפני סיום שעות התקן ",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(),getString(R.string.pre_alarm)+" "+seek1.getProgress()+" "+getString(R.string.minutes_before_alarm),Toast.LENGTH_SHORT).show();
                     }
 
                 });
@@ -372,7 +367,7 @@ public class MainActivity extends ActionBarActivity {
     private void NotificationSoundSelect() {
         Intent RingTonePick = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         RingTonePick.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        RingTonePick.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "בחר צליל התראה");
+        RingTonePick.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_alarm_ringtone));
         RingTonePick.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
         this.startActivityForResult(RingTonePick, 5);
     }
@@ -389,7 +384,7 @@ public class MainActivity extends ActionBarActivity {
             {
                 this.chosenRingtone = uri.toString();
                 dbHandler.addData("tbl_Configuration","SelectedRingtone",uri.toString());
-                Toast.makeText(getBaseContext(), "צליל התראה נשמר", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), getString(R.string.alarm_ringtone_saved), Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -430,22 +425,22 @@ public class MainActivity extends ActionBarActivity {
             case R.id.DeleteAllDB:
                 dbHandler.dropAllTable();
                 TextView text_tv_Note = (TextView) findViewById(R.id.tv_Note);
-                text_tv_Note.setText("לא נמצאו התראות");
-                Toast.makeText(getBaseContext(), "כל המידע נמחק במסד הנתונים", Toast.LENGTH_SHORT).show();
+                text_tv_Note.setText(getString(R.string.alert_not_found));
+                Toast.makeText(getBaseContext(), getString(R.string.all_personal_information_deleted), Toast.LENGTH_SHORT).show();
                 GetUserWorkTimer();
                 return true;
             case R.id.ShowWhenAlert:
                 DBQuery("tbl_Notification", "notification", "");
                 if (dbString.equals(""))
                 {
-                    Toast.makeText(getBaseContext(), "לא נמצאו התראות", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getString(R.string.alert_not_found), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), "התראה נקבעה לשעה:" + dbString, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getString(R.string.alarm_was_set_to)+ dbString, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.DBreCreate:
                 text_tv_Note = (TextView) findViewById(R.id.tv_Note);
-                text_tv_Note.setText("לא נמצאו התראות");
+                text_tv_Note.setText(getString(R.string.alert_not_found));
                 dbHandler.dropAllTable();
                 return true;
             case R.id.RemindMeIn:

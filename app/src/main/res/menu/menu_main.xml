@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/tekentime" android:title="שעות תקן" />
-    <item android:id="@+id/RemindMeIn" android:title="תזמן התראה מוקדמת"/>
-    <item android:id="@+id/NotificationSound" android:title="שנה צליל התראה" />
-    <item android:id="@+id/ShowWhenAlert" android:title="הצג שעת התראה"/>
-    <item android:id="@+id/ExtraTime" android:checkable="true" android:title="אפשר שעות נוספות" />
-    <item android:id="@+id/DeleteAllDB" android:title="נקה נתונים"/>
-    <item android:id="@+id/DBreCreate" android:title="מחק מסד נתונים"/>
+    <item android:id="@+id/tekentime" android:title="@string/Set_teken_time"/>
+    <item android:id="@+id/RemindMeIn" android:title="@string/Set_pre_alarm"/>
+    <item android:id="@+id/NotificationSound" android:title="@string/select_alarm_ringtone"/>
+    <item android:id="@+id/ShowWhenAlert" android:title="@string/show_alert_time"/>
+    <item android:id="@+id/ExtraTime" android:checkable="true" android:title="@string/allow_extra_hours"/>
+    <item android:id="@+id/DeleteAllDB" android:title="@string/delete_all_data"/>
+    <item android:id="@+id/DBreCreate" android:title="@string/delete_db_file"/>
     <item android:id="@+id/action_about" android:title="@string/action_about"  android:orderInCategory="100" app:showAsAction="never" />
 </menu>

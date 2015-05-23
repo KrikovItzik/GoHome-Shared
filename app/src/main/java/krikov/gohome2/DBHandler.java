@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Switch;
-
 
 public class DBHandler extends SQLiteOpenHelper {
     //Database Name and Version
@@ -84,16 +82,6 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     //Add a new row to the database
-    public void addTeken(SetValues Teken){
-        SQLiteDatabase db = getReadableDatabase();
-        onDeleteDB("tbl_Teken");
-        onCreate(db);
-        ContentValues values = new ContentValues();
-        values.put(TABLE_TEKEN_COLUMN_TEKEN, Teken.get_teken());
-        db.insert(TABLE_TEKEN, null, values);
-        db.close();
-    }
-
     public void addData(String tbl_Name,String tbl_Column,String tbl_Data){
         SQLiteDatabase db = getReadableDatabase();
         deleteTable(tbl_Name);
@@ -121,10 +109,10 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     //Delete a product from the database
-    public void deleteFromDB(String tbl_Name,String tbl_Column,String tbl_Data){
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM " + tbl_Name + " WHERE " + tbl_Column + "=\"" + tbl_Data + "\";");
-    }
+//    public void deleteFromDB(String tbl_Name,String tbl_Column,String tbl_Data){
+//        SQLiteDatabase db = getWritableDatabase();
+//        db.execSQL("DELETE FROM " + tbl_Name + " WHERE " + tbl_Column + "=\"" + tbl_Data + "\";");
+//    }
 
     public String getDataFromDB(String tbl_Name,String tbl_Column ,String tbl_Data){
         String dbString = "";
@@ -147,11 +135,11 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
         return dbString;
     }
-
-    public void onDeleteDB(String tbl_Name) {
-        SQLiteDatabase db = getReadableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + tbl_Name);
-        onCreate(db);
-
-    }
+//
+//    public void onDeleteDB(String tbl_Name) {
+//        SQLiteDatabase db = getReadableDatabase();
+//        db.execSQL("DROP TABLE IF EXISTS " + tbl_Name);
+//        onCreate(db);
+//
+//    }
 }
